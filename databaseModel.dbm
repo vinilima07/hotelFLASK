@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.1-beta" last-position="0,45" last-zoom="0.75"
+	 default-schema="public" default-owner="postgres">
+<database name="new_database">
+</database>
+
+<schema name="public" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="quarto">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="80" y="80"/>
+	<column name="id_quarto" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<constraint name="pk_quarto" type="pk-constr" table="public.quarto">
+		<columns names="id_quarto" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_hotel" index="1"/>
+		<object name="id_tipo_quarto" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="hotel_fk" index="1"/>
+		<object name="tipo_quarto_fk" index="2"/>
+	</customidxs>
+</table>
+
+<table name="hotel">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="660" y="80"/>
+	<column name="id_hotel" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<constraint name="pk_hotel" type="pk-constr" table="public.hotel">
+		<columns names="id_hotel" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_preco_temporada" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="preco_temporada_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="tipo_quarto">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="80" y="440"/>
+	<column name="id_tipo" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="tipo">
+		<type name="varchar" length="0"/>
+	</column>
+	<constraint name="pk_tipo_quarto" type="pk-constr" table="public.tipo_quarto">
+		<columns names="id_tipo" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="preco_temporada">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="540" y="420"/>
+	<column name="id_preco_temporada" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="nu_preco_diaria">
+		<type name="double precision" length="0"/>
+	</column>
+	<column name="nome">
+		<type name="varchar" length="0"/>
+	</column>
+	<constraint name="pk_preco_diaria" type="pk-constr" table="public.preco_temporada">
+		<columns names="id_preco_temporada" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="hotel_has_many_quarto" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#102ed9"
+	 src-table="public.hotel"
+	 dst-table="public.quarto"
+	 src-required="true" dst-required="false"/>
+
+<relationship name="quarto_has_type" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#a9bc42"
+	 src-table="public.tipo_quarto"
+	 dst-table="public.quarto"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<relationship name="hotel_has_preco_temporada" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#0c2088"
+	 src-table="public.preco_temporada"
+	 dst-table="public.hotel"
+	 src-required="true" dst-required="false"/>
+
+</dbmodel>
