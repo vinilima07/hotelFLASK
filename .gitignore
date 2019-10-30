@@ -2,5 +2,5 @@ app/__pycache__/
 venv/
 *.swp
 *.swo
-settings.json
+/settings.json
 .vscode/

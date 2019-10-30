@@ -33,7 +33,7 @@
   <div class="content row">
     
     <div id="crud_preco_temporada" class="row">
-      <table class="" style="width:100%">
+      <table class="" style="">
         <tr>
             <th>Temporadas</th>
         </tr>
@@ -47,20 +47,21 @@
     </div>
 
     <div id="crud_tipo_quarto" class="row">
-      <table class="" style="width:100%">
+      <table class="" style="">
         <tr>
             <th>Tipo de quarto</th>
         </tr>
         {% for tipo in tipos_quarto %}
             <tr>
                 <th>{{ tipo[0] }}</th>
+                <th>{{ tipo[1] }}</th>
             </tr>
         {% endfor %}
       </table>
     </div>
       
     <div id="crud_quarto" class="row">
-      <table class="" style="width:100%">
+      <table class="" style="">
         <tr>
             <th>Quartos</th>
         </tr>
@@ -68,6 +69,7 @@
             <tr>
                 <th>{{ quarto[1] }}</th>
                 <th>{{ quarto[2] }}</th>
+                <th>{{ quarto[3] }}</th>
             </tr>
         {% endfor %}
       </table>

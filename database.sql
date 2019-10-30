@@ -31,6 +31,7 @@ ALTER TABLE public.quarto OWNER TO postgres;
 -- DROP TABLE IF EXISTS public.hotel CASCADE;
 CREATE TABLE public.hotel(
 	id_hotel serial NOT NULL,
+	nome varchar,
 	id_preco_temporada integer NOT NULL,
 	CONSTRAINT pk_hotel PRIMARY KEY (id_hotel)
 
@@ -44,6 +45,7 @@ ALTER TABLE public.hotel OWNER TO postgres;
 CREATE TABLE public.tipo_quarto(
 	id_tipo serial NOT NULL,
 	tipo varchar,
+	nu_quarto smallint,
 	CONSTRAINT pk_tipo_quarto PRIMARY KEY (id_tipo)
 
 );
@@ -90,5 +92,5 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES(999.9, 'inverno');
 INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES(1999.9, 'verão');
 
-INSERT INTO hotel (id_preco_temporada) VALUES(1);
-INSERT INTO hotel (id_preco_temporada) VALUES(2);
+INSERT INTO hotel (id_preco_temporada, nome) VALUES(1, 'Mil Maravilhas');
+INSERT INTO hotel (id_preco_temporada, nome) VALUES(2, 'Midland');
