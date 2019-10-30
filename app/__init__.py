@@ -24,10 +24,37 @@ def get_database():
                             port     = settings['port'])
     return conn
 
-def get_addresses():
+def get_quartos():
     conn = get_database()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM endereco')
+    cur.execute('SELECT * FROM quarto')
+    data = cur.fetchall()
+    conn.commit()
+    conn.close()
+    return data
+
+def get_preco_temporada():
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM preco_temporada')
+    data = cur.fetchall()
+    conn.commit()
+    conn.close()
+    return data
+
+def get_hoteis():
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM hotel')
+    data = cur.fetchall()
+    conn.commit()
+    conn.close()
+    return data
+
+def get_tipo_quarto():
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM tipo_quarto')
     data = cur.fetchall()
     conn.commit()
     conn.close()
@@ -35,5 +62,10 @@ def get_addresses():
 
 @app.route('/')
 def index():
-    addresses = get_addresses()
-    return render_template('index.html', addresses=addresses)
+    quartos = get_quartos()
+    precos_temporada = get_preco_temporada()
+    tipos_quarto = get_tipo_quarto()
+    hoteis = get_hoteis()
+    return render_template('index.html', quartos=quartos, 
+        precos_temporada=precos_temporada, tipos_quarto=tipos_quarto, hoteis=hoteis)
+
