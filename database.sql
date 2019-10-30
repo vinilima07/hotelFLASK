@@ -85,4 +85,10 @@ REFERENCES public.preco_temporada (id_preco_temporada) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
+--manual insertions
 
+INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES(999.9, 'inverno');
+INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES(1999.9, 'verão');
+
+INSERT INTO hotel (id_preco_temporada) VALUES(1);
+INSERT INTO hotel (id_preco_temporada) VALUES(2);
