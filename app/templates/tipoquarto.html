@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div>
+    <h2>Modelos para Quartos</h2>
+
+    <table>
+        {% for tipo in tipos_quarto %}
+            <tr>
+                <th>{{ tipo[0] }}</th>
+                <th>{{ tipo[1] }}</th>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

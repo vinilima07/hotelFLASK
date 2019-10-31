@@ -12,7 +12,7 @@
 -- CREATE DATABASE new_database
 -- ;
 -- -- ddl-end --
--- 
+--
 
 -- object: public.quarto | type: TABLE --
 -- DROP TABLE IF EXISTS public.quarto CASCADE;
@@ -45,9 +45,7 @@ ALTER TABLE public.hotel OWNER TO postgres;
 CREATE TABLE public.tipo_quarto(
 	id_tipo serial NOT NULL,
 	tipo varchar,
-	nu_quarto smallint,
 	CONSTRAINT pk_tipo_quarto PRIMARY KEY (id_tipo)
-
 );
 -- ddl-end --
 ALTER TABLE public.tipo_quarto OWNER TO postgres;
@@ -94,3 +92,9 @@ INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES(1999.9, 'verão');
 
 INSERT INTO hotel (id_preco_temporada, nome) VALUES(1, 'Mil Maravilhas');
 INSERT INTO hotel (id_preco_temporada, nome) VALUES(2, 'Midland');
+
+INSERT INTO tipo_quarto (tipo) VALUES('Quarto Solteiro');
+INSERT INTO tipo_quarto (tipo) VALUES('Quarto Duplo Solteiro');
+INSERT INTO tipo_quarto (tipo) VALUES('Quarto Casal');
+INSERT INTO tipo_quarto (tipo) VALUES('Dormitório');
+INSERT INTO tipo_quarto (tipo) VALUES('Suite');
