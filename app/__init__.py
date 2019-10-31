@@ -69,3 +69,9 @@ def index():
     return render_template('index.html', quartos=quartos, 
         precos_temporada=precos_temporada, tipos_quarto=tipos_quarto, hoteis=hoteis)
 
+
+@app.route('/preco_temporada')
+def preco_temporada():
+    precos_temporada = get_preco_temporada()
+    return render_template('preco_temporada.html', precos_temporada=precos_temporada)
+

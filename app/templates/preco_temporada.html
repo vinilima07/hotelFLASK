@@ -1,0 +1,19 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div id="crud_preco_temporada" class="row">
+  <div class="col">
+    <table>
+      <tr>
+          <th>Temporadas</th>
+      </tr>
+      {% for temporada in precos_temporada %}
+          <tr>
+              <th>{{ temporada[2] }}</th>
+              <th>{{ temporada[1] }}</th>
+          </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}
