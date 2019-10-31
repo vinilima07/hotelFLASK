@@ -2,18 +2,38 @@
 
 {% block content %}
 <div id="crud_preco_temporada" class="row">
-  <div class="col">
-    <table>
-      <tr>
-          <th>Temporadas</th>
-      </tr>
-      {% for temporada in precos_temporada %}
+	<div class="col">
+		<table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nome da Temporada</th>
+          <th scope="col">Preço da Temporada</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for temporada in precos_temporada %}
           <tr>
-              <th>{{ temporada[2] }}</th>
-              <th>{{ temporada[1] }}</th>
+              <td>{{ temporada[0] }}</td>
+              <td>{{ temporada[2] }}</td>
+              <td>{{ temporada[1] }}</td>
           </tr>
-      {% endfor %}
-    </table>
-  </div>
+        {% endfor %}
+      </tbody>
+		</table>
+	</div>
+	<div class="col">
+		<form method="post">
+      <div class="form-group">
+  	    <label for="preco_temporada">Preço da temporada</label>
+	      <input class="form-control" type="text" name="preco_temporada" placeholder="Entre com o preço" required>
+			</div>
+      <div class="form-group">  
+        <label for="nome">Nome da temporada</label>
+  			<input class="form-control" type="text" name="nome" placeholder="Entre com o nome" required>
+      </div>
+      <button type="submit" class="btn btn-dark btn-lg btn-block">Cadastrar</button>
+		</form>
+	</div>
 </div>
 {% endblock %}
