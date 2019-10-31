@@ -6,3 +6,8 @@
 body {
   padding-top: 56px;
 }
+
+.content-fluid div{
+	padding-top: 1em;
+	padding-left: 1em;
+}
