@@ -61,7 +61,6 @@ def get_tipo_quarto():
     data = cur.fetchall()
     conn.commit()
     conn.close()
-
     return data
 
 @app.route('/')
@@ -85,7 +84,24 @@ def tipo_quarto():
     if request.method == 'POST':
         pass
 
-@app.route('/preco_temporada')
+@app.route('/preco_temporada', methods=['GET', 'POST'])
 def preco_temporada():
+    if request.method == 'POST':
+        value_preco_temporada = request.form['preco_temporada']
+        value_nome_temporada = request.form['nome_temporada']
+        print(value_preco_temporada)
+        print(value_nome_temporada)
+        conn = get_database()
+        cur = conn.cursor()
+        query = "INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES("+value_preco_temporada+", '"+value_nome_temporada+"')"
+        cur.execute(query)
+        conn.commit()
+        print("Executed:"+query)
+    
     precos_temporada = get_preco_temporada()
     return render_template('preco_temporada.html', precos_temporada=precos_temporada)
+
+
+
+
+
