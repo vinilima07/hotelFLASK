@@ -63,6 +63,18 @@ def get_tipo_quarto():
     conn.close()
     return data
 
+def set_tipo_quarto(novo_tipo_quarto):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM tipo_quarto WHERE tipo = '"+novo_tipo_quarto+"'")
+    data = cur.fetchall()
+    if (not data):
+        qry = "INSERT INTO tipo_quarto (tipo) VALUES('"+novo_tipo_quarto+"')"
+        cur.execute(qry)
+    conn.commit()
+    conn.close()
+    return data
+
 @app.route('/')
 def index():
     quartos = get_quartos()
@@ -76,13 +88,15 @@ def index():
 
 @app.route('/tipoquarto', methods=['GET', 'POST'])
 def tipo_quarto():
-    if request.method == 'GET':
-        tipos_quarto = get_tipo_quarto()
-
-        return render_template('tipoquarto.html', tipos_quarto=tipos_quarto)
-
+    resp = False
     if request.method == 'POST':
-        pass
+        novo_tipo_quarto = request.form['tipo_quarto']
+        print('[tipoquarto] Request insert on database: ', novo_tipo_quarto)
+        resp = True if set_tipo_quarto(novo_tipo_quarto) else False
+        print('[tipoquarto] Insert response: ', resp)
+
+    tipos_quarto = get_tipo_quarto()
+    return render_template('tipoquarto.html', tipos_quarto=tipos_quarto, mostra_aviso=resp)
 
 @app.route('/preco_temporada', methods=['GET', 'POST'])
 def preco_temporada():
@@ -97,11 +111,6 @@ def preco_temporada():
         cur.execute(query)
         conn.commit()
         print("Executed:"+query)
-    
+
     precos_temporada = get_preco_temporada()
     return render_template('preco_temporada.html', precos_temporada=precos_temporada)
-
-
-
-
-

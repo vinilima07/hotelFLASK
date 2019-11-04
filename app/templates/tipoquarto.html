@@ -1,16 +1,41 @@
 {% extends 'index.html' %}
 
 {% block content %}
-<div>
-    <h2>Modelos para Quartos</h2>
+<div class="row">
+    <div class="col" style="height: 450px; overflow: auto;">
+		<table class="table">
+            <thead class="thead-dark">
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tipo de Quarto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tipo in tipos_quarto %}
+                <tr>
+                    <td>{{ tipo[0] }}</td>
+                    <td>{{ tipo[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+		</table>
+    </div>
 
-    <table>
-        {% for tipo in tipos_quarto %}
-            <tr>
-                <th>{{ tipo[0] }}</th>
-                <th>{{ tipo[1] }}</th>
-            </tr>
-        {% endfor %}
-    </table>
+    <div class="col">
+		<form method="post">
+            <div class="form-group">
+                <label for="tipo_quarto">Novo tipo de quarto:</label>
+                <input class="form-control" type="text" name="tipo_quarto" placeholder="Entre com o tipo de quarto" required>
+            </div>
+
+            <button type="submit" class="btn btn-dark btn-lg btn-block">Inserir</button>
+        </form>
+
+        {% if mostra_aviso %}
+            <div class="alert alert-danger" role="alert" style="margin-top: 56px;">
+                <strong>Ops!</strong> Tipo já existente.
+            </div>
+        {% endif %}
+	</div>
 </div>
 {% endblock %}
