@@ -107,7 +107,7 @@ def preco_temporada():
         print(value_nome_temporada)
         conn = get_database()
         cur = conn.cursor()
-        query = "INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES("+value_preco_temporada+", '"+value_nome_temporada+"')"
+        query = "INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada) VALUES("+value_preco_temporada+", '"+value_nome_temporada+"')"
         cur.execute(query)
         conn.commit()
         print("Executed:"+query)

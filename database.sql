@@ -20,6 +20,7 @@ CREATE TABLE public.quarto(
 	id_quarto serial NOT NULL,
 	id_hotel integer NOT NULL,
 	id_tipo_quarto integer NOT NULL,
+	nu_quarto smallint,
 	CONSTRAINT pk_quarto PRIMARY KEY (id_quarto)
 
 );
@@ -31,7 +32,7 @@ ALTER TABLE public.quarto OWNER TO postgres;
 -- DROP TABLE IF EXISTS public.hotel CASCADE;
 CREATE TABLE public.hotel(
 	id_hotel serial NOT NULL,
-	nome varchar,
+	nome_hotel varchar,
 	id_preco_temporada integer NOT NULL,
 	CONSTRAINT pk_hotel PRIMARY KEY (id_hotel)
 
@@ -56,7 +57,7 @@ ALTER TABLE public.tipo_quarto OWNER TO postgres;
 CREATE TABLE public.preco_temporada(
 	id_preco_temporada serial NOT NULL,
 	nu_preco_diaria double precision,
-	nome varchar,
+	nome_temporada varchar,
 	CONSTRAINT pk_preco_diaria PRIMARY KEY (id_preco_temporada)
 
 );
@@ -87,11 +88,11 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --manual insertions
 
-INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES(999.9, 'inverno');
-INSERT INTO preco_temporada (nu_preco_diaria, nome) VALUES(1999.9, 'verão');
+INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada) VALUES(999.9, 'inverno');
+INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada) VALUES(1999.9, 'verão');
 
-INSERT INTO hotel (id_preco_temporada, nome) VALUES(1, 'Mil Maravilhas');
-INSERT INTO hotel (id_preco_temporada, nome) VALUES(2, 'Midland');
+INSERT INTO hotel (id_preco_temporada, nome_hotel) VALUES(1, 'Mil Maravilhas');
+INSERT INTO hotel (id_preco_temporada, nome_hotel) VALUES(2, 'Midland');
 
 INSERT INTO tipo_quarto (tipo) VALUES('Quarto Solteiro');
 INSERT INTO tipo_quarto (tipo) VALUES('Quarto Duplo Solteiro');
