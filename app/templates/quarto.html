@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col" style="height: 450px; overflow: auto;">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tipo de Quarto</th>
+                <th scope="col">Número do Quarto</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quarto in quartos %}
+            <tr>
+                <td>{{ quarto[0] }}</td>
+                <td>{{ quarto[2] }}</td>
+                <td>{{ quarto[1] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col">
+        <form method="post">
+            <div class="form-group">
+                <label for="tipo_quarto">Tipo do quarto</label>
+                <select name="tipo_quarto" class="custom-select">
+                    {% for tipo in tipos %}
+                        <option value="{{ tipo[0] }}">{{ tipo[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="numero_quarto">Número do quarto</label>
+                <input class="form-control" type="text" name="numero_quarto" placeholder="Entre com o número do quarto" required>
+            </div>
+            <button type="submit" class="btn btn-dark btn-lg btn-block">Cadastrar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

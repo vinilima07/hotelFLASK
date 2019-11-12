@@ -30,7 +30,14 @@ def get_database():
 def get_quartos():
     conn = get_database()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM quarto')
+    cur.execute('''
+    SELECT
+        q.id_quarto,
+        q.nu_quarto,
+        t.tipo
+    FROM quarto AS q
+    INNER JOIN tipo_quarto AS t ON t.id_tipo = q.id_tipo_quarto;
+     ''')
     data = cur.fetchall()
     conn.commit()
     conn.close()
@@ -114,3 +121,20 @@ def preco_temporada():
 
     precos_temporada = get_preco_temporada()
     return render_template('preco_temporada.html', precos_temporada=precos_temporada)
+
+@app.route('/quarto', methods=['GET', 'POST'])
+def quarto():
+    if request.method == 'POST':
+        tipo_quarto = request.form['tipo_quarto']
+        numero_quarto = request.form['numero_quarto']
+        conn = get_database()
+        cur = conn.cursor()
+        cur.execute('''
+            INSERT INTO quarto (id_hotel, id_tipo_quarto, nu_quarto)
+            VALUES (1, {}, {})
+        '''.format(tipo_quarto, numero_quarto))
+        conn.commit()
+        conn.close()
+    quartos = get_quartos()
+    tipos = get_tipo_quarto()
+    return render_template('quarto.html', quartos=quartos, tipos=tipos)

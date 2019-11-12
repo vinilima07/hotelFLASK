@@ -4,3 +4,4 @@ venv/
 *.swo
 /settings.json
 .vscode/
+.idea/
