@@ -107,6 +107,8 @@ def tipo_quarto():
 
 @app.route('/preco_temporada', methods=['GET', 'POST'])
 def preco_temporada():
+    msg = ""
+    work = True
     if request.method == 'POST':
         value_preco_temporada = request.form['preco_temporada']
         value_nome_temporada = request.form['nome_temporada']
@@ -115,9 +117,73 @@ def preco_temporada():
         conn = get_database()
         cur = conn.cursor()
         query = "INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada) VALUES("+value_preco_temporada+", '"+value_nome_temporada+"')"
+        try:
+            cur.execute(query)
+            conn.commit()
+            print("Executed:"+query)
+            work = True
+        
+        except:
+            msg = "Fail executing the query"
+            work = False
+
+    
+    else:
+        work = False
+
+    precos_temporada = get_preco_temporada()
+    return render_template('preco_temporada.html', precos_temporada=precos_temporada, work=work, msg=msg)
+
+@app.route('/preco_temporada/<id_preco_temporada>')
+def remove_temporada(id_preco_temporada):
+
+    conn = get_database()
+    cur = conn.cursor()
+    query = "DELETE FROM preco_temporada WHERE id_preco_temporada = "+id_preco_temporada
+    msg = ""
+    work = True
+
+    try:
         cur.execute(query)
         conn.commit()
+        msg = "Remoção Efetuada"
         print("Executed:"+query)
+        work = True
+
+    except:
+        msg = "Não foi possível remover a temporada, esta pode estar em uso ou nao existir."
+        print(msg)
+        work = False
+
+    precos_temporada = get_preco_temporada()
+    return render_template('preco_temporada.html', precos_temporada=precos_temporada, msg=msg, work=work)
+
+@app.route('/preco_temporada/update_temporada', methods=['GET', 'POST'])
+def update_temporada():
+    msg = ""
+    work = True
+    if request.method == 'POST':
+        id_preco_temporada = request.form['id_preco_temporada']
+        value_preco_temporada = request.form['preco_temporada']
+        value_nome_temporada = request.form['nome_temporada']
+        print(value_preco_temporada)
+        print(value_nome_temporada)
+        conn = get_database()
+        cur = conn.cursor()
+        query = "UPDATE preco_temporada SET nu_preco_diaria = "+value_preco_temporada+", nome_preco_temporada = "+value_nome_temporada+" WHERE id_preco_temporada = "+id_preco_temporada
+        
+        try:
+            cur.execute(query)
+            conn.commit()
+            print("Executed:"+query)
+            work = True
+        
+        except:
+            msg = "Fail executing the query"
+            work = False
+
+    else:
+        work = False
 
     precos_temporada = get_preco_temporada()
     return render_template('preco_temporada.html', precos_temporada=precos_temporada)
@@ -138,3 +204,5 @@ def quarto():
     quartos = get_quartos()
     tipos = get_tipo_quarto()
     return render_template('quarto.html', quartos=quartos, tipos=tipos)
+
+    return render_template('preco_temporada.html', precos_temporada=precos_temporada, work=work, msg=msg)
