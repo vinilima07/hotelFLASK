@@ -6,17 +6,32 @@
         <table class="table">
             <thead class="thead-dark">
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Tipo de Quarto</th>
                 <th scope="col">Número do Quarto</th>
+                <th scope="col">Hotel</th>
+                <th scope="col">Remover</th>
+                <th scope="col">Atualizar</th>
             </tr>
             </thead>
             <tbody>
             {% for quarto in quartos %}
             <tr>
-                <td>{{ quarto[0] }}</td>
                 <td>{{ quarto[2] }}</td>
                 <td>{{ quarto[1] }}</td>
+                <td>{{ quarto[3] }}</td>
+                <td style="text-align: center;">
+                    <form method="get" action="quarto" id="formDelete{{ quarto[0] }}">
+                        <input type="hidden" name="delete" value="{{ quarto[0] }}">
+                        <button class="btn btn-dark" type="submit" form="formDelete{{ quarto[0] }}">X</button>
+                    </form>
+                </td>
+                <td style="text-align: center;">
+                    <form method="get" action="update" id="formUpdate{{ quarto[0] }}">
+                        <input type="hidden" name="type" value="2">
+                        <input type="hidden" name="update" value="{{ quarto[0] }}">
+                        <button class="btn btn-dark" type="submit" form="formUpdate{{ quarto[0] }}">U</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
             </tbody>
@@ -29,6 +44,14 @@
                 <select name="tipo_quarto" class="custom-select">
                     {% for tipo in tipos %}
                         <option value="{{ tipo[0] }}">{{ tipo[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="id_hotel">Hotel</label>
+                <select name="id_hotel" class="custom-select">
+                    {% for hotel in hoteis %}
+                    <option value="{{ hotel[0] }}">{{ hotel[1] }}</option>
                     {% endfor %}
                 </select>
             </div>

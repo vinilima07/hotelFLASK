@@ -6,15 +6,28 @@
 		<table class="table">
             <thead class="thead-dark">
                 <tr>
-                <th scope="col">#</th>
-                <th scope="col">Tipo de Quarto</th>
+                    <th scope="col">Tipo de Quarto</th>
+                    <th scope="col">Remover</th>
+                    <th scope="col">Atualizar</th>
                 </tr>
             </thead>
             <tbody>
                 {% for tipo in tipos_quarto %}
                 <tr>
-                    <td>{{ tipo[0] }}</td>
                     <td>{{ tipo[1] }}</td>
+                    <td style="text-align: center;">
+                        <form method="get" action="tipoquarto" id="formDelete{{ tipo[0] }}">
+                            <input type="hidden" name="delete" value="{{ tipo[0] }}">
+                            <button class="btn btn-dark" type="submit" form="formDelete{{ tipo[0] }}">X</button>
+                        </form>
+                    </td>
+                    <td style="text-align: center;">
+                        <form method="get" action="update" id="formUpdate{{ tipo[0] }}">
+                            <input type="hidden" name="type" value="1">
+                            <input type="hidden" name="update" value="{{ tipo[0] }}">
+                            <button class="btn btn-dark" type="submit" form="formUpdate{{ tipo[0] }}">U</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

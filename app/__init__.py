@@ -27,6 +27,29 @@ def get_database():
                             port     = settings['port'])
     return conn
 
+def update_quarto(id_quarto, tipo_quarto, numero_quarto, id_hotel):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('''
+    UPDATE quarto SET
+        id_hotel = {},
+        id_tipo_quarto = {},
+        nu_quarto = {}
+    WHERE id_quarto = {};
+     '''.format(id_hotel, tipo_quarto, numero_quarto, id_quarto))
+    conn.commit()
+    conn.close()
+
+def get_quarto_by_id(id_quarto, quartos):
+    for quarto in quartos:
+        if int(quarto[0]) == int(id_quarto):
+            return quarto
+
+def get_temporada_by_id(id_temporada, temporadas):
+    for temporada in temporadas:
+        if int(temporada[0]) == int(id_temporada):
+            return temporada
+
 def get_quartos():
     conn = get_database()
     cur = conn.cursor()
@@ -34,14 +57,69 @@ def get_quartos():
     SELECT
         q.id_quarto,
         q.nu_quarto,
-        t.tipo
+        t.tipo,
+        h.nome_hotel
     FROM quarto AS q
-    INNER JOIN tipo_quarto AS t ON t.id_tipo = q.id_tipo_quarto;
+    INNER JOIN tipo_quarto AS t ON t.id_tipo = q.id_tipo_quarto
+    INNER JOIN hotel AS h ON h.id_hotel = q.id_hotel;
      ''')
     data = cur.fetchall()
     conn.commit()
     conn.close()
     return data
+
+def delete_quarto(id_quarto):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('''
+        DELETE FROM quarto WHERE id_quarto = {}
+    '''.format(id_quarto))
+    conn.commit()
+    conn.close()
+
+def delete_tipo(id_tipo):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('''
+        DELETE FROM tipo_quarto WHERE id_tipo = {}
+    '''.format(id_tipo))
+    conn.commit()
+    conn.close()
+
+def delete_preco_temporada(id_preco_temporada):
+    msg = ""
+    conn = get_database()
+    cur = conn.cursor()
+    try:
+        cur.execute('''
+            DELETE FROM preco_temporada WHERE id_preco_temporada = {}
+        '''.format(id_preco_temporada))
+        conn.commit()
+    except:
+        msg = "Fail executing the query"
+        work = False
+    conn.close()
+    return msg
+
+def insert_quarto(id_hotel, tipo_quarto, numero_quarto):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('''
+        INSERT INTO quarto (id_hotel, id_tipo_quarto, nu_quarto)
+        VALUES ({},{},{})
+    '''.format(id_hotel, tipo_quarto, numero_quarto))
+    conn.commit()
+    conn.close()
+
+def insert_preco_temporada(preco, nome_temporada):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('''
+        INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada)
+        VALUES ({},'{}')
+    '''.format(preco, nome_temporada))
+    conn.commit()
+    conn.close()
 
 def get_preco_temporada():
     conn = get_database()
@@ -70,6 +148,11 @@ def get_tipo_quarto():
     conn.close()
     return data
 
+def get_tipo_by_id(id_tipo, tipos):
+    for tipo in tipos:
+        if int(tipo[0]) == int(id_tipo):
+            return tipo
+
 def set_tipo_quarto(novo_tipo_quarto):
     conn = get_database()
     cur = conn.cursor()
@@ -77,6 +160,44 @@ def set_tipo_quarto(novo_tipo_quarto):
     data = cur.fetchall()
     if (not data):
         qry = "INSERT INTO tipo_quarto (tipo) VALUES('"+novo_tipo_quarto+"')"
+        cur.execute(qry)
+    conn.commit()
+    conn.close()
+    return data
+
+def update_preco_temporada(request_id, preco_temporada, nome_temporada):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM preco_temporada WHERE nu_preco_diaria = {} AND nome_temporada = '{}'".format(preco_temporada, nome_temporada))
+    data = cur.fetchall()
+    if (not data):
+        qry = "UPDATE preco_temporada SET nu_preco_diaria = {}, nome_temporada = '{}' WHERE id_preco_temporada = {}".format(preco_temporada, nome_temporada, request_id)
+        cur.execute(qry)
+    conn.commit()
+    conn.close()
+    return data
+
+def insert_preco_temporada(preco, nome_temporada):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM preco_temporada WHERE nu_preco_diaria = {} AND nome_temporada = '{}'".format(preco, nome_temporada))
+    data = cur.fetchall()
+    if (not data):
+        cur.execute('''
+            INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada)
+            VALUES ({},'{}')
+        '''.format(preco, nome_temporada))
+    conn.commit()
+    conn.close()
+    return data
+
+def update_tipo_quarto(id_tipo_quarto, tipo_quarto):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM tipo_quarto WHERE tipo = '{}'".format(tipo_quarto))
+    data = cur.fetchall()
+    if (not data):
+        qry = "UPDATE tipo_quarto SET tipo = '{}' WHERE id_tipo = {}".format(tipo_quarto, id_tipo_quarto)
         cur.execute(qry)
     conn.commit()
     conn.close()
@@ -98,111 +219,87 @@ def tipo_quarto():
     resp = False
     if request.method == 'POST':
         novo_tipo_quarto = request.form['tipo_quarto']
-        print('[tipoquarto] Request insert on database: ', novo_tipo_quarto)
         resp = True if set_tipo_quarto(novo_tipo_quarto) else False
-        print('[tipoquarto] Insert response: ', resp)
+
+    deleteID = request.args.get('delete')
+    if deleteID is not None:
+        delete_tipo(deleteID)
+        return redirect(url_for('tipo_quarto'))
 
     tipos_quarto = get_tipo_quarto()
     return render_template('tipoquarto.html', tipos_quarto=tipos_quarto, mostra_aviso=resp)
 
 @app.route('/preco_temporada', methods=['GET', 'POST'])
 def preco_temporada():
+    resp = False
     msg = ""
-    work = True
     if request.method == 'POST':
         value_preco_temporada = request.form['preco_temporada']
         value_nome_temporada = request.form['nome_temporada']
-        print(value_preco_temporada)
-        print(value_nome_temporada)
-        conn = get_database()
-        cur = conn.cursor()
-        query = "INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada) VALUES("+value_preco_temporada+", '"+value_nome_temporada+"')"
-        try:
-            cur.execute(query)
-            conn.commit()
-            print("Executed:"+query)
-            work = True
-        
-        except:
-            msg = "Fail executing the query"
-            work = False
-
-    
-    else:
-        work = False
+        resp = True if insert_preco_temporada(value_preco_temporada, value_nome_temporada) else False
 
     precos_temporada = get_preco_temporada()
-    return render_template('preco_temporada.html', precos_temporada=precos_temporada, work=work, msg=msg)
-
-@app.route('/preco_temporada/<id_preco_temporada>')
-def remove_temporada(id_preco_temporada):
-
-    conn = get_database()
-    cur = conn.cursor()
-    query = "DELETE FROM preco_temporada WHERE id_preco_temporada = "+id_preco_temporada
-    msg = ""
-    work = True
-
-    try:
-        cur.execute(query)
-        conn.commit()
-        msg = "Remoção Efetuada"
-        print("Executed:"+query)
-        work = True
-
-    except:
-        msg = "Não foi possível remover a temporada, esta pode estar em uso ou nao existir."
-        print(msg)
-        work = False
-
-    precos_temporada = get_preco_temporada()
-    return render_template('preco_temporada.html', precos_temporada=precos_temporada, msg=msg, work=work)
-
-@app.route('/preco_temporada/update_temporada', methods=['GET', 'POST'])
-def update_temporada():
-    msg = ""
-    work = True
-    if request.method == 'POST':
-        id_preco_temporada = request.form['id_preco_temporada']
-        value_preco_temporada = request.form['preco_temporada']
-        value_nome_temporada = request.form['nome_temporada']
-        print(value_preco_temporada)
-        print(value_nome_temporada)
-        conn = get_database()
-        cur = conn.cursor()
-        query = "UPDATE preco_temporada SET nu_preco_diaria = "+value_preco_temporada+", nome_preco_temporada = "+value_nome_temporada+" WHERE id_preco_temporada = "+id_preco_temporada
-        
-        try:
-            cur.execute(query)
-            conn.commit()
-            print("Executed:"+query)
-            work = True
-        
-        except:
-            msg = "Fail executing the query"
-            work = False
-
-    else:
-        work = False
-
-    precos_temporada = get_preco_temporada()
-    return render_template('preco_temporada.html', precos_temporada=precos_temporada)
+    deleteID = request.args.get('delete')
+    if deleteID is not None:
+        msg = delete_preco_temporada(deleteID)
+        return render_template('preco_temporada.html', precos_temporada=precos_temporada, mostra_aviso=resp, msg=msg)
+    return render_template('preco_temporada.html', precos_temporada=precos_temporada, mostra_aviso=resp, msg=msg)
 
 @app.route('/quarto', methods=['GET', 'POST'])
 def quarto():
     if request.method == 'POST':
         tipo_quarto = request.form['tipo_quarto']
         numero_quarto = request.form['numero_quarto']
-        conn = get_database()
-        cur = conn.cursor()
-        cur.execute('''
-            INSERT INTO quarto (id_hotel, id_tipo_quarto, nu_quarto)
-            VALUES (1, {}, {})
-        '''.format(tipo_quarto, numero_quarto))
-        conn.commit()
-        conn.close()
+        id_hotel = request.form['id_hotel']
+        insert_quarto(id_hotel, tipo_quarto, numero_quarto)
+
+    deleteID = request.args.get('delete')
+    if deleteID is not None:
+        delete_quarto(deleteID)
+        return redirect(url_for('quarto'))
+
     quartos = get_quartos()
     tipos = get_tipo_quarto()
-    return render_template('quarto.html', quartos=quartos, tipos=tipos)
+    hoteis = get_hoteis()
+    return render_template('quarto.html', quartos=quartos, tipos=tipos, hoteis=hoteis)
 
-    return render_template('preco_temporada.html', precos_temporada=precos_temporada, work=work, msg=msg)
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+    tipo = request.args.get('type')
+    request_id = request.args.get('update')
+
+    if request.method == 'POST':
+         if tipo == "1":
+            tipo_quarto = request.form['tipo_quarto']
+            resp = True if update_tipo_quarto(request_id, tipo_quarto) else False
+            tipos_quarto = get_tipo_quarto()
+            return render_template('tipoquarto.html', tipos_quarto=tipos_quarto, mostra_aviso=resp)
+
+         if tipo == "2":
+            tipo_quarto = request.form['tipo_quarto']
+            numero_quarto = request.form['numero_quarto']
+            id_hotel = request.form['id_hotel']
+            update_quarto(request_id, tipo_quarto, numero_quarto, id_hotel)
+            return redirect(url_for('quarto'))
+
+         if tipo == "3":
+            preco_temporada = request.form['preco_temporada']
+            nome_temporada = request.form['nome_temporada']
+            resp = True if update_preco_temporada(request_id, preco_temporada, nome_temporada) else False
+            precos_temporada=get_preco_temporada()
+            return render_template('preco_temporada.html', precos_temporada=precos_temporada, mostra_aviso=resp)
+
+    if tipo == "1":
+        tipos = get_tipo_quarto()
+        tipo_quarto = get_tipo_by_id(request_id, tipos)
+        return render_template('update.html', tipo_quarto=tipo_quarto, op=tipo)
+    if tipo == "2":
+        quartos = get_quartos()
+        quarto = get_quarto_by_id(request_id, quartos)
+        tipos = get_tipo_quarto()
+        hoteis = get_hoteis()
+        return render_template('update.html', quartos=quartos, tipos=tipos, hoteis=hoteis, quarto=quarto, op=tipo)
+    if tipo == "3":
+        precos = get_preco_temporada()
+        temporada = get_temporada_by_id(request_id, precos)
+        return render_template('update.html', temporada=temporada, op=tipo)

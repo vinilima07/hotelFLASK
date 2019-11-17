@@ -3,24 +3,33 @@
 {% block content %}
 <div id="crud_preco_temporada" class="row">
 	<div class="col">
-    <p>Listagem & Remoção</p>
 		<table class="table">
       <thead class="thead-dark">
         <tr>
-          <th scope="col">#</th>
           <th scope="col">Nome da Temporada</th>
           <th scope="col">Preço da Temporada</th>
-          <th scope="col">Update</th>
-          <th scope="col">Remove</th>
+          <th scope="col">Remover</th>
+          <th scope="col">Atualizar</th>
         </tr>
       </thead>
       <tbody>
         {% for temporada in precos_temporada %}
           <tr>
-              <td>{{ temporada[0] }}></td>
               <td>{{ temporada[2] }}</td>
               <td>{{ temporada[1] }}</td>
-              <td><a href=/preco_temporada/{{ temporada[0] }}><button>-</button></a></td>
+              <td style="text-align: center;">
+                <form method="get" action="preco_temporada" id="formDelete{{ temporada[0] }}">
+                  <input type="hidden" name="delete" value="{{ temporada[0] }}">
+                  <button class="btn btn-dark" type="submit" form="formDelete{{ temporada[0] }}">X</button>
+                </form>
+              </td>
+              <td style="text-align: center;">
+                <form method="get" action="update" id="formUpdate{{ temporada[0] }}">
+                  <input type="hidden" name="type" value="3">
+                  <input type="hidden" name="update" value="{{ temporada[0] }}">
+                  <button class="btn btn-dark" type="submit" form="formUpdate{{ temporada[0] }}">U</button>
+                </form>
+              </td>
           </tr>
         {% endfor %}
       </tbody>
@@ -28,7 +37,6 @@
 	</div>
 
 	<div class="col">
-    <p>Cadastro</p>
 		<form method="post">
       <div class="form-group">
   	    <label for="preco_temporada">Preço da temporada</label>
@@ -40,37 +48,19 @@
       </div>
       <button type="submit" class="btn btn-dark btn-lg btn-block">Cadastrar</button>
 		</form>
+
+      {% if mostra_aviso %}
+      <div class="alert alert-danger" role="alert" style="margin-top: 56px;">
+        <strong>Ops!</strong> Combinação já existente.
+      </div>
+      {% endif %}
+
+      {% if msg != "" %}
+      <div class="alert alert-danger" role="alert" style="margin-top: 56px;">
+        <strong>Ops!</strong> Impossível remover o preço.
+      </div>
+      {% endif %}
 	</div>
-  
-  <div class="col">
-    <p>Atualização</p>
-    <form method="post">
-      <div class="form-group">
-        <label for="selected_id">ID da temporada</label>
-        <select class="form-control" id="selected_id">
-          {% for temporada in precos_temporada %}
-            <option>{{ temporada[0] }}</option>
-          {% endfor %}
-        </select> 
-      </div>
-      <div class="form-group">
-        <label for="preco_temporada">Preço da temporada</label>
-        <input class="form-control" type="number" name="preco_temporada" step=".01" placeholder="Entre com o preço" required>
-      </div>
-      <div class="form-group">  
-        <label for="nome_temporada">Nome da temporada</label>
-        <input class="form-control" type="text" name="nome_temporada" placeholder="Entre com o nome" required>
-      </div>
-      <button type="submit" class="btn btn-dark btn-lg btn-block">Atualizar</button>
-    </form>
-  </div>
-
 </div>
-
-{% if not work %}
-  <div class="alert alert-danger" role="alert" style="margin-top: 56px;">
-      <strong>Ops!</strong>{{ msg }}
-  </div>
-{% endif %}
 
 {% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    {% if op == "1" %}
+        <div style="text-align: center;" class="row">
+            <div class="col">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="tipo_quarto">Tipo do quarto:</label>
+                        <input class="form-control" type="text" name="tipo_quarto" placeholder="Entre com o tipo de quarto" value="{{ tipo_quarto[1] }}" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg btn-block">Atualizar</button>
+                </form>
+
+                {% if mostra_aviso %}
+                <div class="alert alert-danger" role="alert" style="margin-top: 56px;">
+                    <strong>Ops!</strong> Tipo já existente.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% elif op == "2" %}
+        <div style="text-align: center;" class="row">
+            <div class="col">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="tipo_quarto">Tipo do quarto</label>
+                        <select name="tipo_quarto" class="custom-select">
+                            {% for tipo in tipos %}
+                            {% if tipo[1] == quarto[2] %}
+                            <option selected value="{{ tipo[0] }}">{{ tipo[1] }}</option>
+                            {% else %}
+                            <option value="{{ tipo[0] }}">{{ tipo[1] }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_hotel">Hotel</label>
+                        <select name="id_hotel" class="custom-select">
+                            {% for hotel in hoteis %}
+                            {% if hotel[1] == quarto[3] %}
+                            <option selected value="{{ hotel[0] }}">{{ hotel[1] }}</option>
+                            {% else %}
+                            <option value="{{ hotel[0] }}">{{ hotel[1] }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="numero_quarto">Número do quarto</label>
+                        <input class="form-control" type="text" name="numero_quarto" placeholder="Entre com o número do quarto" value="{{ quarto[1] }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark btn-lg btn-block">Atualizar</button>
+                </form>
+            </div>
+        </div>
+    {% elif op == "3" %}
+        <div class="col">
+            <form method="post">
+                <div class="form-group">
+                    <label for="preco_temporada">Preço da temporada</label>
+                    <input class="form-control" type="number" name="preco_temporada" step=".01" placeholder="Entre com o preço" value="{{ temporada[1] }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="nome_temporada">Nome da temporada</label>
+                    <input class="form-control" type="text" name="nome_temporada" placeholder="Entre com o nome" value="{{ temporada[2] }}" required>
+                </div>
+                <button type="submit" class="btn btn-dark btn-lg btn-block">Atualizar</button>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}
