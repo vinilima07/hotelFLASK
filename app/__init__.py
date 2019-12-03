@@ -229,6 +229,26 @@ def insere_reserva(id_quarto, dt_inicio, dt_fim):
     conn.commit()
     conn.close()
 
+def reserva_pacote(quarto, dt_inicio, dt_fim):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM reserva_hotel WHERE id_quarto_quarto = {} AND dt_inicio >= '{}' AND dt_fim <= '{}'".format(quarto, dt_inicio, dt_fim))
+    data = cur.fetchall() # Verifica se reserva disponível.
+
+    if data is not None:
+        cur.execute("INSERT INTO reserva_hotel (id_quarto_quarto, dt_inicio, dt_fim) VALUES ({}, '{}', '{}') RETURNING id_reserva_quarto;".format(quarto, dt_inicio, dt_fim))
+        id_reserva_quarto = cur.fetchall()
+
+        # Reserva carro, simulação.
+        import random
+        id_reserva_carro = random.randint(0, 50)
+
+        cur.execute("INSERT INTO reserva_pacote (id_reserva_hotel_reserva_hotel, id_reserva_carro) VALUES ({}, {})".format(id_reserva_quarto[0][0], id_reserva_carro))
+
+    conn.commit()
+    conn.close()
+    return data
+
 @app.route('/')
 def index():
     quartos = get_quartos()
@@ -332,6 +352,7 @@ def update():
 
 @app.route('/reserva_quarto', methods=['GET', 'POST'])
 def reserva_quarto():
+    quartos = get_quartos()
     if request.method == 'POST':
         id_quarto = request.form['id_quarto']
         dt_inicio = request.form['dt_inicio']
@@ -343,5 +364,25 @@ def reserva_quarto():
         quartos = get_quartos_by_cidade(cidade)
     else:
         quartos = get_quartos()
-    
+
     return render_template('reserva_quarto.html', quartos=quartos)
+
+@app.route('/reserva_pacote', methods=['GET', 'POST'])
+def reserva_pacote():
+    quartos = get_quartos()
+    resp = False
+    if request.method == 'POST':
+        id_quarto = request.form['id_quarto']
+        dt_inicio = request.form['dt_inicio']
+        dt_fim = request.form['dt_fim']
+        print(dt_inicio)
+
+        err = reserva_pacote(id_quarto, dt_inicio, dt_fim)
+        if err:
+            resp = True
+
+    filtro = request.args.get('filtrar')
+    if filtro is not None:
+        pass
+
+    return render_template('reserva_pacote.html', quartos=quartos, mostra_aviso=resp)
