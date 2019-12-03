@@ -88,23 +88,23 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 
--- object: public.reserva_hotel | type: TABLE --
--- DROP TABLE IF EXISTS public.reserva_hotel CASCADE;
-CREATE TABLE public.reserva_hotel(
+-- object: public.reserva_quarto | type: TABLE --
+-- DROP TABLE IF EXISTS public.reserva_quarto CASCADE;
+CREATE TABLE public.reserva_quarto(
 	dt_inicio date DEFAULT now(),
 	dt_fim date DEFAULT now(),
-	id_reserva_hotel serial NOT NULL,
+	id_reserva_quarto serial NOT NULL,
 	id_quarto integer NOT NULL,
-	CONSTRAINT pk_reserva_hotel PRIMARY KEY (id_reserva_hotel)
+	CONSTRAINT pk_reserva_quarto PRIMARY KEY (id_reserva_quarto)
 
 );
 -- ddl-end --
-ALTER TABLE public.reserva_hotel OWNER TO postgres;
+ALTER TABLE public.reserva_quarto OWNER TO postgres;
 -- ddl-end --
 
 -- object: quarto_fk | type: CONSTRAINT --
--- ALTER TABLE public.reserva_hotel DROP CONSTRAINT IF EXISTS quarto_fk CASCADE;
-ALTER TABLE public.reserva_hotel ADD CONSTRAINT quarto_fk FOREIGN KEY (id_quarto_quarto)
+-- ALTER TABLE public.reserva_quarto DROP CONSTRAINT IF EXISTS quarto_fk CASCADE;
+ALTER TABLE public.reserva_quarto ADD CONSTRAINT quarto_fk FOREIGN KEY (id_quarto_quarto)
 REFERENCES public.quarto (id_quarto) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
@@ -112,23 +112,23 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 -- object: public.reserva_pacote | type: TABLE --
 -- DROP TABLE IF EXISTS public.reserva_pacote CASCADE;
 CREATE TABLE public.reserva_pacote(
-	id_reserva_hotel integer NOT NULL,
+	id_reserva_quarto integer NOT NULL,
 	id_reserva_carro integer
 );
 -- ddl-end --
 ALTER TABLE public.reserva_pacote OWNER TO postgres;
 -- ddl-end --
 
--- object: reserva_hotel_fk | type: CONSTRAINT --
--- ALTER TABLE public.reserva_pacote DROP CONSTRAINT IF EXISTS reserva_hotel_fk CASCADE;
-ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_hotel_fk FOREIGN KEY (id_reserva_hotel)
-REFERENCES public.reserva_hotel (id_reserva_hotel) MATCH FULL
+-- object: reserva_quarto_fk | type: CONSTRAINT --
+-- ALTER TABLE public.reserva_pacote DROP CONSTRAINT IF EXISTS reserva_quarto_fk CASCADE;
+ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_quarto_fk FOREIGN KEY (id_reserva_quarto)
+REFERENCES public.reserva_quarto (id_reserva_quarto) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: reserva_pacote_uq | type: CONSTRAINT --
 -- ALTER TABLE public.reserva_pacote DROP CONSTRAINT IF EXISTS reserva_pacote_uq CASCADE;
-ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_pacote_uq UNIQUE (id_reserva_hotel);
+ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_pacote_uq UNIQUE (id_reserva_quarto);
 -- ddl-end --
 
 --manual insertions

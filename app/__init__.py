@@ -78,7 +78,8 @@ def get_quartos():
         q.id_quarto,
         q.nu_quarto,
         t.tipo,
-        h.nome_hotel
+        h.nome_hotel,
+        h.cidade
     FROM quarto AS q
     INNER JOIN tipo_quarto AS t ON t.id_tipo = q.id_tipo_quarto
     INNER JOIN hotel AS h ON h.id_hotel = q.id_hotel;
@@ -226,24 +227,42 @@ def update_tipo_quarto(id_tipo_quarto, tipo_quarto):
 def insere_reserva(id_quarto, dt_inicio, dt_fim):
     conn = get_database()
     cur = conn.cursor()
-    conn.commit()
-    conn.close()
+
+    cur.execute('''
+    SELECT * FROM reserva_quarto WHERE id_quarto = {} AND dt_inicio >= '{}' AND dt_fim <= '{}'
+    '''.format(id_quarto, dt_inicio, dt_fim))
+    data = cur.fetchall()
+
+    if len(data) == 0:
+        cur.execute('''
+        INSERT INTO reserva_quarto (id_quarto, dt_inicio, dt_fim)
+        VALUES({}, '{}', '{}') RETURNING id_reserva_quarto 
+        '''.format(id_quarto, dt_inicio, dt_fim))
+        
+        id_reserva_quarto = cur.fetchall()
+        conn.commit()
+        conn.close()
+        
+        return id_reserva_quarto[0][0]
+    else:
+        return False
 
 def reserva_pacote(quarto, dt_inicio, dt_fim):
     conn = get_database()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM reserva_hotel WHERE id_quarto_quarto = {} AND dt_inicio >= '{}' AND dt_fim <= '{}'".format(quarto, dt_inicio, dt_fim))
+    cur.execute("SELECT * FROM reserva_quarto WHERE id_quarto = {} AND dt_inicio >= '{}' AND dt_fim <= '{}'".format(quarto, dt_inicio, dt_fim))
     data = cur.fetchall() # Verifica se reserva disponível.
 
-    if data is not None:
-        cur.execute("INSERT INTO reserva_hotel (id_quarto_quarto, dt_inicio, dt_fim) VALUES ({}, '{}', '{}') RETURNING id_reserva_quarto;".format(quarto, dt_inicio, dt_fim))
-        id_reserva_quarto = cur.fetchall()
+    if len(data) == 0:
+        id_reserva_quarto = insere_reserva(quarto, dt_inicio, dt_fim)
+        if id_reserva_quarto is False:
+            return False
 
         # Reserva carro, simulação.
         import random
         id_reserva_carro = random.randint(0, 50)
 
-        cur.execute("INSERT INTO reserva_pacote (id_reserva_hotel_reserva_hotel, id_reserva_carro) VALUES ({}, {})".format(id_reserva_quarto[0][0], id_reserva_carro))
+        cur.execute("INSERT INTO reserva_pacote (id_reserva_quarto, id_reserva_carro) VALUES ({}, {})".format(id_reserva_quarto, id_reserva_carro))
 
     conn.commit()
     conn.close()
@@ -353,11 +372,15 @@ def update():
 @app.route('/reserva_quarto', methods=['GET', 'POST'])
 def reserva_quarto():
     quartos = get_quartos()
+    resp = False
     if request.method == 'POST':
         id_quarto = request.form['id_quarto']
         dt_inicio = request.form['dt_inicio']
         dt_fim = request.form['dt_fim']
-        insere_reserva(id_quarto, dt_inicio, dt_fim)
+        
+        err = insere_reserva(id_quarto, dt_inicio, dt_fim)
+        if err:
+            resp = True
 
     cidade = request.args.get('cidade')
     if cidade is not None:
@@ -365,7 +388,7 @@ def reserva_quarto():
     else:
         quartos = get_quartos()
 
-    return render_template('reserva_quarto.html', quartos=quartos)
+    return render_template('reserva_quarto.html', quartos=quartos, mostra_aviso=resp)
 
 @app.route('/reserva_pacote', methods=['GET', 'POST'])
 def reserva_pacote():
@@ -375,7 +398,6 @@ def reserva_pacote():
         id_quarto = request.form['id_quarto']
         dt_inicio = request.form['dt_inicio']
         dt_fim = request.form['dt_fim']
-        print(dt_inicio)
 
         err = reserva_pacote(id_quarto, dt_inicio, dt_fim)
         if err:
