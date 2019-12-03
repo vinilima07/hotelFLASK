@@ -136,12 +136,12 @@ ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_pacote_uq UNIQUE (id_re
 INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada) VALUES(999.9, 'inverno');
 INSERT INTO preco_temporada (nu_preco_diaria, nome_temporada) VALUES(1999.9, 'verão');
 
-INSERT INTO hotel (id_preco_temporada, nome_hotel) VALUES(1, 'Mil Maravilhas');
-INSERT INTO hotel (id_preco_temporada, nome_hotel) VALUES(2, 'Midland');
-INSERT INTO hotel (id_preco_temporada, nome_hotel) VALUES(1, 'Paukimia');
-INSERT INTO hotel (id_preco_temporada, nome_hotel) VALUES(1, 'Nascero Branco');
-INSERT INTO hotel (id_preco_temporada, nome_hotel) VALUES(2, 'Ananab');
-INSERT INTO hotel (id_preco_temporada, nome_hotel) VALUES(2, 'Zilligod');
+INSERT INTO hotel (id_preco_temporada, nome_hotel, cidade) VALUES(1, 'Mil Maravilhas', 'Belo Horizonte');
+INSERT INTO hotel (id_preco_temporada, nome_hotel, cidade) VALUES(2, 'Midland', 'Belo Horizonte');
+INSERT INTO hotel (id_preco_temporada, nome_hotel, cidade) VALUES(1, 'Paukimia', 'Contagem');
+INSERT INTO hotel (id_preco_temporada, nome_hotel, cidade) VALUES(1, 'Nascero Branco', 'Contagem');
+INSERT INTO hotel (id_preco_temporada, nome_hotel, cidade) VALUES(2, 'Ananab', 'Leite');
+INSERT INTO hotel (id_preco_temporada, nome_hotel, cidade) VALUES(2, 'Zilligod', 'Leite');
 
 INSERT INTO tipo_quarto (tipo) VALUES('Quarto Solteiro');
 INSERT INTO tipo_quarto (tipo) VALUES('Quarto Duplo Solteiro');
