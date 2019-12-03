@@ -94,7 +94,7 @@ CREATE TABLE public.reserva_hotel(
 	dt_inicio date DEFAULT now(),
 	dt_fim date DEFAULT now(),
 	id_reserva_hotel serial NOT NULL,
-	id_quarto_quarto integer NOT NULL,
+	id_quarto integer NOT NULL,
 	CONSTRAINT pk_reserva_hotel PRIMARY KEY (id_reserva_hotel)
 
 );
@@ -112,7 +112,7 @@ ON DELETE RESTRICT ON UPDATE CASCADE;
 -- object: public.reserva_pacote | type: TABLE --
 -- DROP TABLE IF EXISTS public.reserva_pacote CASCADE;
 CREATE TABLE public.reserva_pacote(
-	id_reserva_hotel_reserva_hotel integer NOT NULL,
+	id_reserva_hotel integer NOT NULL,
 	id_reserva_carro integer
 );
 -- ddl-end --
@@ -121,14 +121,14 @@ ALTER TABLE public.reserva_pacote OWNER TO postgres;
 
 -- object: reserva_hotel_fk | type: CONSTRAINT --
 -- ALTER TABLE public.reserva_pacote DROP CONSTRAINT IF EXISTS reserva_hotel_fk CASCADE;
-ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_hotel_fk FOREIGN KEY (id_reserva_hotel_reserva_hotel)
+ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_hotel_fk FOREIGN KEY (id_reserva_hotel)
 REFERENCES public.reserva_hotel (id_reserva_hotel) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 -- ddl-end --
 
 -- object: reserva_pacote_uq | type: CONSTRAINT --
 -- ALTER TABLE public.reserva_pacote DROP CONSTRAINT IF EXISTS reserva_pacote_uq CASCADE;
-ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_pacote_uq UNIQUE (id_reserva_hotel_reserva_hotel);
+ALTER TABLE public.reserva_pacote ADD CONSTRAINT reserva_pacote_uq UNIQUE (id_reserva_hotel);
 -- ddl-end --
 
 --manual insertions
