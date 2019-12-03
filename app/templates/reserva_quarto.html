@@ -1,0 +1,33 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="row" style="margin: 0px!important;">
+    <form method="get" action="reserva_quarto" id="formCidade">
+        <label for="cidade">Insira a cidade</label>
+        <input type="text" name="cidade" required>
+        <button class="btn btn-dark" type="submit" form="formCidade">Filtrar</button>
+    </form>
+</div>
+<div class="row" style="margin: 0px!important;">
+    <form method="post" action="reserva_quarto" id="formQuarto">
+        <div class="form-group">
+            <label for="dt_inicio">Data de início</label>
+            <input type="date" name="dt_inicio" required>
+        </div>
+        <div class="form-group">
+            <label for="dt_fim">Data Final</label>
+            <input type="date" name="dt_fim" required>
+        </div>
+        <div class="form-group">
+            <label for="quarto">Quartos</label>
+            <select name="quarto" class="custom-select">
+                {% for quarto in quartos %}
+                    <option value="{{ quarto[0] }}">Hotel: {{ quarto[1] }} - Tipo de Quarto: {{ quarto[2] }} - N: {{ quarto[3] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button class="btn btn-dark" type="submit" form="formQuarto">Cadastrar reserva</button>
+    </form>
+</div>
+{% endblock %}

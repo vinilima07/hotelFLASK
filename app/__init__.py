@@ -50,6 +50,26 @@ def get_temporada_by_id(id_temporada, temporadas):
         if int(temporada[0]) == int(id_temporada):
             return temporada
 
+def get_quartos_by_cidade(cidade):
+    conn = get_database()
+    cur = conn.cursor()
+    cur.execute('''
+    SELECT
+        q.id_quarto,
+        q.nu_quarto,
+        t.tipo,
+        h.nome_hotel,
+        h.cidade
+    FROM quarto AS q
+    INNER JOIN tipo_quarto AS t ON t.id_tipo = q.id_tipo_quarto
+    INNER JOIN hotel AS h ON h.id_hotel = q.id_hotel
+    WHERE h.cidade = '{}';
+     '''.format(cidade))
+    data = cur.fetchall()
+    conn.commit()
+    conn.close()
+    return data
+
 def get_quartos():
     conn = get_database()
     cur = conn.cursor()
@@ -203,6 +223,12 @@ def update_tipo_quarto(id_tipo_quarto, tipo_quarto):
     conn.close()
     return data
 
+def insere_reserva(id_quarto, dt_inicio, dt_fim):
+    conn = get_database()
+    cur = conn.cursor()
+    conn.commit()
+    conn.close()
+
 @app.route('/')
 def index():
     quartos = get_quartos()
@@ -303,3 +329,19 @@ def update():
         precos = get_preco_temporada()
         temporada = get_temporada_by_id(request_id, precos)
         return render_template('update.html', temporada=temporada, op=tipo)
+
+@app.route('/reserva_quarto', methods=['GET', 'POST'])
+def reserva_quarto():
+    if request.method == 'POST':
+        id_quarto = request.form['id_quarto']
+        dt_inicio = request.form['dt_inicio']
+        dt_fim = request.form['dt_fim']
+        insere_reserva(id_quarto, dt_inicio, dt_fim)
+
+    cidade = request.args.get('cidade')
+    if cidade is not None:
+        quartos = get_quartos_by_cidade(cidade)
+    else:
+        quartos = get_quartos()
+    
+    return render_template('reserva_quarto.html', quartos=quartos)
