@@ -23,8 +23,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_hotel" index="1"/>
-		<object name="id_tipo_quarto" index="2"/>
+		<object name="id_hotel_hotel" index="1"/>
+		<object name="id_tipo_tipo_quarto" index="2"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
@@ -45,7 +45,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_preco_temporada" index="1"/>
+		<object name="id_preco_temporada_preco_temporada" index="1"/>
 	</customidxs>
 
 	<customidxs object-type="constraint">
@@ -56,7 +56,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="tipo_quarto">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="80" y="440"/>
+	<position x="200" y="320"/>
 	<column name="id_tipo" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -71,7 +71,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="preco_temporada">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="540" y="420"/>
+	<position x="940" y="380"/>
 	<column name="id_preco_temporada" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -115,6 +115,68 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 custom-color="#0c2088"
 	 src-table="public.preco_temporada"
 	 dst-table="public.hotel"
+	 src-required="true" dst-required="false"/>
+
+<table name="reserva_hotel">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="200" y="500"/>
+	<column name="dt_inicio" default-value="now()">
+		<type name="date" length="0"/>
+	</column>
+	<column name="dt_fim" default-value="1">
+		<type name="date" length="0"/>
+	</column>
+	<column name="id_reserva_hotel" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<constraint name="pk_reserva_hotel" type="pk-constr" table="public.reserva_hotel">
+		<columns names="id_reserva_hotel" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="id_quarto_quarto" index="3"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="quarto_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="quarto_has_many_reserva_hotel" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#0c11de"
+	 src-table="public.quarto"
+	 dst-table="public.reserva_hotel"
+	 src-required="true" dst-required="false"/>
+
+<table name="reserva_pacote">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="820" y="540"/>
+	<column name="id_reserva_carro">
+		<type name="integer" length="0"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="id_reserva_hotel_reserva_hotel" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="reserva_hotel_fk" index="0"/>
+		<object name="reserva_pacote_uq" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="reserva_pacote_has_one_reserva_hotel" type="rel11"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#0be269"
+	 src-table="public.reserva_hotel"
+	 dst-table="public.reserva_pacote"
 	 src-required="true" dst-required="false"/>
 
 </dbmodel>
