@@ -236,18 +236,19 @@ def insere_reserva(id_quarto, dt_inicio, dt_fim):
     if len(data) == 0:
         cur.execute('''
         INSERT INTO reserva_quarto (id_quarto, dt_inicio, dt_fim)
-        VALUES({}, '{}', '{}') RETURNING id_reserva_quarto 
+        VALUES({}, '{}', '{}') RETURNING id_reserva_quarto
         '''.format(id_quarto, dt_inicio, dt_fim))
-        
+
         id_reserva_quarto = cur.fetchall()
         conn.commit()
         conn.close()
-        
+
         return id_reserva_quarto[0][0]
+
     else:
         return False
 
-def reserva_pacote(quarto, dt_inicio, dt_fim):
+def insere_reserva_pacote(quarto, dt_inicio, dt_fim):
     conn = get_database()
     cur = conn.cursor()
     cur.execute("SELECT * FROM reserva_quarto WHERE id_quarto = {} AND dt_inicio >= '{}' AND dt_fim <= '{}'".format(quarto, dt_inicio, dt_fim))
@@ -377,9 +378,9 @@ def reserva_quarto():
         id_quarto = request.form['id_quarto']
         dt_inicio = request.form['dt_inicio']
         dt_fim = request.form['dt_fim']
-        
+
         err = insere_reserva(id_quarto, dt_inicio, dt_fim)
-        if err:
+        if isinstance(err, bool):
             resp = True
 
     cidade = request.args.get('cidade')
@@ -399,12 +400,12 @@ def reserva_pacote():
         dt_inicio = request.form['dt_inicio']
         dt_fim = request.form['dt_fim']
 
-        err = reserva_pacote(id_quarto, dt_inicio, dt_fim)
+        err = insere_reserva_pacote(id_quarto, dt_inicio, dt_fim)
         if err:
             resp = True
 
-    filtro = request.args.get('filtrar')
-    if filtro is not None:
-        pass
+    cidade = request.args.get('cidade')
+    if cidade is not None:
+        quartos = get_quartos_by_cidade(cidade)
 
     return render_template('reserva_pacote.html', quartos=quartos, mostra_aviso=resp)

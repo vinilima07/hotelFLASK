@@ -3,12 +3,20 @@
 {% block content %}
 <div class="row" style="margin: 0px!important;">
     <div class="col">
+        <div style="text-align: right;">
+            <form method="get" action="reserva_pacote" id="formCidade" style="margin-bottom: 15px;">
+                <label for="cidade">Insira a cidade </label>
+                <input type="text" name="cidade" required>
+                <button class="btn btn-dark" type="submit" form="formCidade">Filtrar</button>
+            </form>
+        </div>
+
         <form method="post">
             <div class="form-group">
                 <label for="id_quarto">Quartos disponíveis</label>
                 <select name="id_quarto" class="custom-select">
                     {% for quarto in quartos %}
-                        <option value="{{ quarto[0] }}">{{ quarto[1] }}</option>
+                        <option value="{{ quarto[0] }}">Cidade: {{ quarto[4] }} - Hotel: {{ quarto[3] }} - Tipo de Quarto: {{ quarto[2] }} - N: {{ quarto[1] }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -24,8 +32,8 @@
         </form>
 
         {% if mostra_aviso %}
-          <div class="alert alert-danger" role="alert" style="margin-top: 56px;">
-            <strong>Ops!</strong> Combinação já existente.
+          <div class="alert alert-danger" role="alert" style="margin-top: 30px;">
+            <strong>Ops!</strong> Quarto já reservado para o período.
           </div>
         {% endif %}
     </div>
