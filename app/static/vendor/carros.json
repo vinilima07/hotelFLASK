@@ -1,5 +1,5 @@
-{
-    "carros": [{
+[
+    {
         "modelo": "Fiat Uno",
         "preco": 15000,
         "id": 0
@@ -11,5 +11,5 @@
         "modelo": "BMW",
         "preco": 500000,
         "id": 2
-    }]
-}
+    }
+]
