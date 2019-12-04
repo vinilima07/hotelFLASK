@@ -1,0 +1,15 @@
+{
+    "carros": [{
+        "modelo": "Fiat Uno",
+        "preco": 15000,
+        "id": 0
+    }, {
+        "modelo": "Palio Go",
+        "preco": 20000,
+        "id": 1
+    }, {
+        "modelo": "BMW",
+        "preco": 500000,
+        "id": 2
+    }]
+}
